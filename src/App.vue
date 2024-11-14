@@ -1,28 +1,32 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <UploadFragment @success="uploadSuccess" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import UploadFragment from './components/UploadFragment.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    UploadFragment
+  },
+  methods: {
+    uploadSuccess(res) {
+      console.log('---uploadSuccess', res)
+    }
   }
 }
 </script>
 
 <style>
+body{
+  margin: 0;
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 100vh;
+  display: grid;
+  place-items: center;
 }
 </style>
