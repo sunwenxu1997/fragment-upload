@@ -15,7 +15,7 @@
       <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
     </el-upload>
     <el-table :data="uploadFilesList" border style="margin-top: 50px">
-      <el-table-column prop="name" :show-overflow-tooltip="true" label="文件名" width="150" />
+      <el-table-column prop="name" :show-overflow-tooltip="true" label="文件名" min-width="150" />
       <el-table-column prop="uid" align="center" label="是否成功" width="200">
         <template slot-scope="scope">
           <template v-if="scope.row.status === 'success'">上传成功！</template>
@@ -30,7 +30,7 @@
         </template>
       </el-table-column>
       <el-table-column width="120" prop="fileSize" label="大小" align="center" />
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column fixed="right" align="center" label="操作" width="80">
         <template slot-scope="scope">
           <el-button type="text" @click="handleDel(scope.$index)">删除</el-button>
         </template>
@@ -131,7 +131,7 @@ export default {
       const fileName = context.file.name
       console.log('---initChunk', context)
       return new Promise(async (resolve) => {
-        const res = await this.$http.post(`/opple/webadmin/file/initiatePart?fileName=${fileName}`)
+        const res = await this.$http.post(`/file/initiatePart?fileName=${fileName}`)
         const fileIndex = this.uploadFilesList.findIndex((item) => item.uid === context.file.uid)
         this.$set(this.uploadFilesList[fileIndex], 'cancelTokenSource', context.cancelTokenSource)
         const { content } = res.data
@@ -148,7 +148,7 @@ export default {
         const formData = new FormData()
         formData.append('file', chunk)
         this.$http({
-          url: `/opple/webadmin/file/uploadPartNew?uploadId=${uploadId}&partNumber=${partNumber}`,
+          url: `/file/uploadPartNew?uploadId=${uploadId}&partNumber=${partNumber}`,
           method: 'post',
           data: formData,
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -167,6 +167,7 @@ export default {
             resolve(res.data)
           })
           .catch((error) => {
+            this.$message.closeAll()
             this.$message.error(error.chnDesc || error.message || '上传失败')
             console.error('uploadChunk error', error)
           })
@@ -175,7 +176,7 @@ export default {
 
     // 合并分片
     mergeChunk(context) {
-      return this.$http.get(`/opple/webadmin/file/mergePartNew?uploadId=${context.uploadId}`)
+      return this.$http.get(`/file/mergePartNew?uploadId=${context.uploadId}`)
     },
     // 获取当前chunk分片数据
     getChunkInfo(context, index) {
